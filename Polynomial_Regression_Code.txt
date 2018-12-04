@@ -1,0 +1,258 @@
+
+# Reading data in R
+
+df<-read.csv('C:/Users/Nitin/Desktop/mtcars/cars.csv',sep=',',header=T)
+head(df)
+
+index<-sample(1:nrow(df),.8*nrow(df))
+train<-df[index,]
+test<-df[-index,]
+
+# Creating train datasets with size 20,30,50,100,200,300
+
+index1 <- sample(1:nrow(train),20)
+train1<-train[index1,]
+
+index2 <- sample(1:nrow(train),30)
+train2<-train[index2,]
+
+index3 <- sample(1:nrow(train),50)
+train3<-train[index3,]
+
+index4 <- sample(1:nrow(train),100)
+train4<-train[index4,]
+
+index5 <- sample(1:nrow(train),200)
+train5<-train[index5,]
+
+index6 <- sample(1:nrow(train),300)
+train6<-train[index6,]
+
+# Building models on training samples
+
+
+m1<-lm(MPG~Weight + I(Weight^2)+I(Weight^3)+I(Weight^4)+I(Weight^5)+I(Weight^6),data=train1)
+m2<-lm(MPG~Weight + I(Weight^2)+I(Weight^3)+I(Weight^4)+I(Weight^5)+I(Weight^6),data=train2)
+m3<-lm(MPG~Weight + I(Weight^2)+I(Weight^3)+I(Weight^4)+I(Weight^5)+I(Weight^6),data=train3)
+m4<-lm(MPG~Weight + I(Weight^2)+I(Weight^3)+I(Weight^4)+I(Weight^5)+I(Weight^6),data=train4)
+m5<-lm(MPG~Weight + I(Weight^2)+I(Weight^3)+I(Weight^4)+I(Weight^5)+I(Weight^6),data=train5)
+m6<-lm(MPG~Weight + I(Weight^2)+I(Weight^3)+I(Weight^4)+I(Weight^5)+I(Weight^6),data=train6)
+
+
+# Predict for test
+p1<-predict(m1,newdata=test)
+p2<-predict(m2,newdata=test)
+p3<-predict(m3,newdata=test)
+p4<-predict(m4,newdata=test)
+p5<-predict(m5,newdata=test)
+p6<-predict(m6,newdata=test)
+
+
+# calculate errors:
+e1<-sum((test$MPG-p1)^2)
+e2<-sum((test$MPG-p2)^2)
+e3<-sum((test$MPG-p3)^2)
+e4<-sum((test$MPG-p4)^2)
+e5<-sum((test$MPG-p5)^2)
+e6<-sum((test$MPG-p6)^2)
+
+# Error vector
+testerror=c(e1,e2,e3,e4,e5,e6)
+
+#Train Size vector
+size=c(20,30,50,100,200,300)
+
+plot(size,testerror,pch=19,cex=0.7,xlab='Train sample size',ylab='Test Error',main='Effect of Train sample size on Test error')
+lines(size,testerror, col='blue', type='l',pch=20) 
+
+
+# Question 2 
+
+library(ggplot2)
+library(plyr)
+
+data = read.csv('C:/Users/Nitin/Desktop/mtcars/cars.csv',sep=',',header=T)
+data
+
+set.seed(123)
+rand = sample(1:nrow(data),352)
+train = data[rand,]
+test = data[-rand,]
+
+#Fitting 2nd order Polynomial
+
+residual_sum2 <- c( )
+test_sum2 <- c( )
+x <- c(1:10)
+for (i in 1:4) 
+{
+  set.seed(0)
+  rand_train = sample(1:nrow(train),100, replace = FALSE)
+  train_data = train[rand_train,]
+  #MODEL 1 
+  m1 <- lm(MPG ~ Weight, train_data)
+  #TRAIN AND TEST ACCURACY
+  residual_sum2 <- c(residual_sum2,sum(m1$residuals^2))
+  pred2 = predict(m1, newdata=test)
+  test_sum2 <- c(test_sum2,sum((pred2-test$MPG)^2))
+  #MODEL 2  
+  m2 <- lm(MPG ~ Weight + I(Weight^2), train_data)
+  #TRAIN AND TEST ACCURACY
+  residual_sum2 <- c(residual_sum2,sum(m2$residuals^2))
+  pred2 = predict(m2, newdata=test)
+  test_sum2 <- c(test_sum2,sum((pred2-test$MPG)^2))
+  #MODEL 3  
+  m3 <- lm(MPG ~ Weight + I(Weight^2) + I(Weight^3), train_data)
+  #TRAIN AND TEST ACCURACY
+  residual_sum2 <- c(residual_sum2,sum(m3$residuals^2))
+  pred2 = predict(m3, newdata=test)
+  test_sum2 <- c(test_sum2,sum((pred2-test$MPG)^2))
+  #MODEL 4 
+  m4 <- lm(MPG ~ Weight + I(Weight^2) + I(Weight^3) + I(Weight^4), train_data)
+  #TRAIN AND TEST ACCURACY
+  residual_sum2 <- c(residual_sum2,sum(m4$residuals^2))
+  pred2 = predict(m4, newdata=test)
+  test_sum2 <- c(test_sum2,sum((pred2-test$MPG)^2))
+  #MODEL 5 
+  m5 <- lm(MPG ~ Weight + I(Weight^2) + I(Weight^3) + I(Weight^4), train_data)
+  #TRAIN AND TEST ACCURACY
+  residual_sum2 <- c(residual_sum2,sum(m5$residuals^2))
+  pred2 = predict(m5, newdata=test)
+  test_sum2 <- c(test_sum2,sum((pred2-test$MPG)^2))
+  #MODEL 6 
+  m6 <- lm(MPG ~ Weight + I(Weight^2) + I(Weight^3) + I(Weight^4), train_data)
+  #TRAIN AND TEST ACCURACY
+  residual_sum2 <- c(residual_sum2,sum(m6$residuals^2))
+  pred2 = predict(m6, newdata=test)
+  test_sum2 <- c(test_sum2,sum((pred2-test$MPG)^2))
+  #MODEL 7 
+  m7 <- lm(MPG ~ Weight + I(Weight^2) + I(Weight^3) + I(Weight^4), train_data)
+  #TRAIN AND TEST ACCURACY
+  residual_sum2 <- c(residual_sum2,sum(m7$residuals^2))
+  pred2 = predict(m7, newdata=test)
+  test_sum2 <- c(test_sum2,sum((pred2-test$MPG)^2))
+  #MODEL 8 
+  m8 <- lm(MPG ~ Weight + I(Weight^2) + I(Weight^3) + I(Weight^4), train_data)
+  #TRAIN AND TEST ACCURACY
+  residual_sum2 <- c(residual_sum2,sum(m8$residuals^2))
+  pred2 = predict(m8, newdata=test)
+  test_sum2 <- c(test_sum2,sum((pred2-test$MPG)^2))
+  #MODEL 9 
+  m9 <- lm(MPG ~ Weight + I(Weight^2) + I(Weight^3) + I(Weight^4), train_data)
+  #TRAIN AND TEST ACCURACY
+  residual_sum2 <- c(residual_sum2,sum(m9$residuals^2))
+  pred2 = predict(m9, newdata=test)
+  test_sum2 <- c(test_sum2,sum((pred2-test$MPG)^2))
+  #MODEL 10 
+  m10 <- lm(MPG ~ Weight + I(Weight^2) + I(Weight^3) + I(Weight^4), train_data)
+  #TRAIN AND TEST ACCURACY
+  residual_sum2 <- c(residual_sum2,sum(m10$residuals^2))
+  pred2 = predict(m10, newdata=test)
+  test_sum2 <- c(test_sum2,sum((pred2-test$MPG)^2))
+}
+
+test_err_1 <- test_sum2[1:10]
+test_err_2 <- test_sum2[11:20]
+test_err_3 <- test_sum2[21:30]
+test_err_4 <- test_sum2[31:40]
+
+
+
+#PLOTTING THE MODEL OVER THE DATA
+plot(x,test_err_1, type = "l",main =paste("Polynomial Regression of Order ", i,"(Sample size 20)", sep = ""),
+     xlab = "Sample Size", ylab = "Test Error", cex = 0.5, col = 'red')
+plot(x,test_err_2, type = "l",main =paste("Polynomial Regression of Order ", i,"(Sample size 20)", sep = ""),
+     xlab = "Sample Size", ylab = "Test Error", cex = 0.5, col = 'red')
+plot(x,test_err_3, type = "l",main =paste("Polynomial Regression of Order ", i,"(Sample size 20)", sep = ""),
+     xlab = "Sample Size", ylab = "Test Error", cex = 0.5, col = 'red')
+plot(x,test_err_4, type = "l",main =paste("Polynomial Regression of Order ", i,"(Sample size 20)", sep = ""),
+     xlab = "Sample Size", ylab = "Test Error", cex = 0.5, col = 'red')
+#dev.off()
+
+
+graph <- function(new_sample, model_no, i){
+  jpeg(paste("Polynomial Regession for Order", i,"plot of sample size of 100",".jpeg", sep = ""))
+  #PLOTTING THE MODEL OVER THE DATA
+  plot(new_sample$Weight,new_sample$MPG, pch=19, cex=0.5, main =paste("Polynomial Regression of Order ", i,"(Sample size 100)", sep = ""), xlab = "Weight", ylab = "MPG")
+  lines(sort(new_sample$Weight), fitted(model_no)[order(new_sample$Weight)], col='brown', type='l',pch=20)
+  dev.off()
+}
+
+
+
+
+
+
+
+# 3. 
+
+df<-read.csv('C:/Users/Nitin/Desktop/mtcars/cars.csv',sep=',',header=T)
+head(df)
+
+index<-sample(1:nrow(df),0.8*nrow(df))
+train<-df[index,]
+test<-df[-index,]
+
+# Model Complexity 1,2,3,4,5,6,7,8,9
+m1<-lm(MPG~Weight,data=train)
+m2<-lm(MPG~Weight+I(Weight^2),data=train)
+m3<-lm(MPG~Weight+I(Weight^2)+I(Weight^3),data=train)
+m4<-lm(MPG~Weight+I(Weight^2)+I(Weight^3)+I(Weight^4),data=train)
+m5<-lm(MPG~Weight+I(Weight^2)+I(Weight^3)+I(Weight^4)+I(Weight^5),data=train)
+m6<-lm(MPG~Weight+I(Weight^2)+I(Weight^3)+I(Weight^4)+I(Weight^5)+I(Weight^6),data=train)
+m7<-lm(MPG~Weight+I(Weight^2)+I(Weight^3)+I(Weight^4)+I(Weight^5)+I(Weight^6)+I(Weight^7),data=train)
+m8<-lm(MPG~Weight+I(Weight^2)+I(Weight^3)+I(Weight^4)+I(Weight^5)+I(Weight^6)+I(Weight^7)+I(Weight^8),data=train)
+m9<-lm(MPG~Weight+I(Weight^2)+I(Weight^3)+I(Weight^4)+I(Weight^5)+I(Weight^6)+I(Weight^7)+I(Weight^8)+I(Weight^9),data=train)
+
+train_rmse1=sqrt(sum((m1$residuals)^2)/nrow(train))
+train_rmse2=sqrt(sum((m2$residuals)^2)/nrow(train))
+train_rmse3=sqrt(sum((m3$residuals)^2)/nrow(train))
+train_rmse4=sqrt(sum((m4$residuals)^2)/nrow(train))
+train_rmse5=sqrt(sum((m5$residuals)^2)/nrow(train))
+train_rmse6=sqrt(sum((m6$residuals)^2)/nrow(train))
+train_rmse7=sqrt(sum((m7$residuals)^2)/nrow(train))
+train_rmse8=sqrt(sum((m8$residuals)^2)/nrow(train))
+train_rmse9=sqrt(sum((m9$residuals)^2)/nrow(train))
+
+
+# Predict for Test data using 1,2,3,4,5,6,7,8,9
+
+pred1<-predict(m1,newdata=test,sep=',',header=T)
+pred2<-predict(m2,newdata=test,sep=',',header=T)
+pred3<-predict(m3,newdata=test,sep=',',header=T)
+pred4<-predict(m4,newdata=test,sep=',',header=T)
+pred5<-predict(m5,newdata=test,sep=',',header=T)
+pred6<-predict(m6,newdata=test,sep=',',header=T)
+pred7<-predict(m7,newdata=test,sep=',',header=T)
+pred8<-predict(m8,newdata=test,sep=',',header=T)
+pred9<-predict(m9,newdata=test,sep=',',header=T)
+
+
+# Calculate RMSE for the test data
+test_rmse1=sqrt(sum((test$MPG-pred1)^2)/nrow(test))
+test_rmse2=sqrt(sum((test$MPG-pred2)^2)/nrow(test))
+test_rmse3=sqrt(sum((test$MPG-pred3)^2)/nrow(test))
+test_rmse4=sqrt(sum((test$MPG-pred4)^2)/nrow(test))
+test_rmse5=sqrt(sum((test$MPG-pred5)^2)/nrow(test))
+test_rmse6=sqrt(sum((test$MPG-pred6)^2)/nrow(test))
+test_rmse7=sqrt(sum((test$MPG-pred7)^2)/nrow(test))
+test_rmse8=sqrt(sum((test$MPG-pred8)^2)/nrow(test))
+test_rmse9=sqrt(sum((test$MPG-pred9)^2)/nrow(test))
+
+
+# Prepare train RMSE list and test RMSE list
+
+train_rmse=c(train_rmse1,train_rmse2,train_rmse3,train_rmse4,train_rmse5,train_rmse6,train_rmse7,train_rmse8,train_rmse9)
+test_rmse=c(test_rmse1,test_rmse2,test_rmse3,test_rmse4,test_rmse5,test_rmse6,test_rmse7,test_rmse8,test_rmse9)
+complexity<-c(1,2,3,4,5,6,7,8,9)
+
+plot(complexity,train_rmse,pch=19,cex=0.5,ylab='Test/Train Error',xlab='Degree of Polynomial',lty=1)
+lines(complexity,train_rmse,col='blue')
+par(new = TRUE)
+plot(complexity,test_rmse,pch=19,axes=F,cex=0.5,ylab='Test/Train Error',xlab='Degree of Polynomial',lty=2)
+lines(complexity,test_rmse,col='red')
+
+legend('topright', legend=c("Test Error", "Train Error"),col=c("red", "blue"), lty=1:2, cex=0.8)
+
+
+
